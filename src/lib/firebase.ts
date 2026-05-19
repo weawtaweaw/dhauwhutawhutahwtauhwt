@@ -3,17 +3,7 @@ import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { getFirestore, doc, getDocFromServer } from 'firebase/firestore';
 import firebaseConfig from '../../firebase-applet-config.json';
 
-const firebaseAppId = firebaseConfig.appId;
-const isPlaceholder = !firebaseAppId || firebaseAppId.includes('remixed');
-
-const app = initializeApp(isPlaceholder ? {
-  apiKey: "placeholder",
-  authDomain: "placeholder",
-  projectId: "placeholder",
-  storageBucket: "placeholder",
-  messagingSenderId: "placeholder",
-  appId: "placeholder"
-} : firebaseConfig);
+const app = initializeApp(firebaseConfig);
 
 export const db = firebaseConfig.firestoreDatabaseId 
   ? getFirestore(app, firebaseConfig.firestoreDatabaseId)

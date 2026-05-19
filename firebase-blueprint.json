@@ -14,12 +14,26 @@
         "createdBy": { "type": "string", "description": "Admin who created the key" }
       },
       "required": ["key", "isLifetime", "createdAt", "createdBy"]
+    },
+    "AdminSettings": {
+      "title": "Admin Settings",
+      "description": "Global settings for admin access.",
+      "type": "object",
+      "properties": {
+        "adminUser": { "type": "string" },
+        "adminPass": { "type": "string" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      }
     }
   },
   "firestore": {
     "/access_keys/{keyId}": {
       "schema": "Key",
       "description": "Collection of generated access keys."
+    },
+    "/admin_settings/{settingId}": {
+      "schema": "AdminSettings",
+      "description": "Sensitive admin configuration."
     }
   }
 }

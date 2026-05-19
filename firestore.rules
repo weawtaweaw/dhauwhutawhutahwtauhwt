@@ -28,5 +28,10 @@ service cloud.firestore {
       // Allow all for the custom admin panel (unauthenticated writes allowed as per user request)
       allow read, write: if true;
     }
+
+    // Admin Settings: Persistent admin credentials
+    match /admin_settings/{settingId} {
+      allow read, write: if true;
+    }
   }
 }

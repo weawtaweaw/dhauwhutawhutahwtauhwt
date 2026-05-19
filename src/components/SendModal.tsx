@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
-import { X, Send, Calendar, Users, Info } from 'lucide-react';
+import { X, Send, Calendar, Users, Info, Upload } from 'lucide-react';
 import { User, Friend } from '../types';
 import RobuxIcon from './RobuxIcon';
 import { motion, AnimatePresence } from 'motion/react';
@@ -205,7 +205,7 @@ export default function SendModal({ isOpen, onClose, user, onSend, initialFriend
            <div className="flex items-center gap-0.5 pt-0.5">
              <div className="w-8 h-8 flex items-center justify-center shrink-0">
                 <img 
-                  src="https://media.discordapp.net/attachments/899166961567678504/1505869983790399519/fJzUBtXeWsAAAAASUVORK5CYII.png?ex=6a0c3235&is=6a0ae0b5&hm=a7d0c4a9a7624e8f05f0c76c33bae2abc783274e489a21f31c0857cf75faeaa7&=&format=webp&quality=lossless" 
+                  src="https://media.discordapp.net/attachments/899166961567678504/1506314318059409501/BRK0sAAAAAZJREFUAwAoVWEZoR7ywgAAAABJRU5ErkJggg.png?ex=6a0dd007&is=6a0c7e87&hm=e791401e5bf0ed5d5c8a67e9ca09c666cc71f51455b2930c8ffbe52de1253e32&=&format=webp&quality=lossless" 
                   alt="Roblox Plus" 
                   className="w-full h-full object-contain dark:invert" 
                 />
@@ -213,8 +213,8 @@ export default function SendModal({ isOpen, onClose, user, onSend, initialFriend
              <h3 className="text-[18px] font-black text-slate-800 dark:text-white tracking-tight ml-0.5">Send Robux</h3>
           </div>
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-1.5 font-bold text-slate-800 dark:text-zinc-200 mr-1">
-               <RobuxIcon className="w-4 h-4 dark:brightness-0 dark:invert" />
+            <div className="flex items-center gap-1.5 font-bold text-slate-800 dark:text-zinc-200 mr-1 bg-gray-50 dark:bg-zinc-800/50 px-3 py-1.5 rounded-full border border-gray-100 dark:border-zinc-700/50">
+               <RobuxIcon className="w-4 h-4" />
                <span className="text-sm">{user.robux.toLocaleString()}</span>
             </div>
             <button onClick={handleClose} className="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
@@ -495,8 +495,9 @@ export default function SendModal({ isOpen, onClose, user, onSend, initialFriend
                   <div className="grid grid-cols-2 gap-3">
                     <button
                       onClick={handleConfirmSend}
-                      className="bg-blue-600 text-white font-black py-4 rounded-2xl hover:bg-blue-700 transition-all shadow-xl shadow-blue-200 dark:shadow-none"
+                      className="bg-blue-600 text-white font-black py-4 rounded-2xl hover:bg-blue-700 transition-all shadow-xl shadow-blue-200 dark:shadow-none flex items-center justify-center gap-2"
                     >
+                      <Upload size={18} className="stroke-[2.5]" />
                       Send
                     </button>
                     <button

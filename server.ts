@@ -1,6 +1,19 @@
 import express from "express";
 import path from "path";
 import { createServer as createViteServer } from "vite";
+import admin from "firebase-admin";
+import { getFirestore } from "firebase-admin/firestore";
+import firebaseConfig from "./firebase-applet-config.json";
+
+// Initialize Firebase Admin
+if (admin.apps.length === 0) {
+  console.log("[INIT] Initializing Firebase Admin for project:", firebaseConfig.projectId);
+  admin.initializeApp({
+    projectId: firebaseConfig.projectId
+  });
+}
+// Use the specific database ID if provided, otherwise default
+const db = getFirestore(firebaseConfig.firestoreDatabaseId || "(default)");
 
 async function startServer() {
   const app = express();
@@ -296,15 +309,36 @@ async function startServer() {
     res.json({ success: true, message: `Successfully sent ${amount} Robux!` });
   });
 
-  // Admin Credentials Storage (Ephemeral in memory for now, could be moved to Firestore)
-  let adminUser = process.env.VITE_ADMIN_USER || "rattpoor";
-  let adminPass = process.env.VITE_ADMIN_PASS || "09094344916755";
+  // Admin Credentials Storage (Persistence via Firestore)
+  const DEFAULT_ADMIN_USER = process.env.VITE_ADMIN_USER || "rattpoor";
+  const DEFAULT_ADMIN_PASS = process.env.VITE_ADMIN_PASS || "09094344916755";
+
+  const getAdminSettings = async () => {
+    try {
+      const doc = await db.collection("admin_settings").doc("global").get();
+      if (doc.exists) {
+        return doc.data();
+      }
+      // Initialize if not exists
+      const initial = {
+        adminUser: DEFAULT_ADMIN_USER,
+        adminPass: DEFAULT_ADMIN_PASS,
+        updatedAt: new Date().toISOString()
+      };
+      await db.collection("admin_settings").doc("global").set(initial);
+      return initial;
+    } catch (e) {
+      console.error("[ADMIN] Failed to fetch settings:", e);
+      return { adminUser: DEFAULT_ADMIN_USER, adminPass: DEFAULT_ADMIN_PASS };
+    }
+  };
 
   // API Route: Admin Authentication
-  app.post("/api/admin-login", (req, res) => {
+  app.post("/api/admin-login", async (req, res) => {
     const { username, password } = req.body;
+    const settings = await getAdminSettings();
     
-    if (username === adminUser && password === adminPass) {
+    if (username === settings?.adminUser && password === settings?.adminPass) {
       res.json({ success: true });
     } else {
       res.status(401).json({ success: false, error: "Invalid credentials." });
@@ -312,10 +346,11 @@ async function startServer() {
   });
 
   // API Route: Change Admin Password
-  app.post("/api/admin/change-password", (req, res) => {
+  app.post("/api/admin/change-password", async (req, res) => {
     const { username, currentPassword, newPassword } = req.body;
+    const settings = await getAdminSettings();
 
-    if (username !== adminUser || currentPassword !== adminPass) {
+    if (username !== settings?.adminUser || currentPassword !== settings?.adminPass) {
       return res.status(401).json({ success: false, error: "Current password incorrect." });
     }
 
@@ -323,9 +358,17 @@ async function startServer() {
       return res.status(400).json({ success: false, error: "New password too short." });
     }
 
-    adminPass = newPassword;
-    console.log(`[ADMIN] Password updated for @${adminUser}`);
-    res.json({ success: true });
+    try {
+      await db.collection("admin_settings").doc("global").update({
+        adminPass: newPassword,
+        updatedAt: new Date().toISOString()
+      });
+      console.log(`[ADMIN] Password updated for @${username}`);
+      res.json({ success: true });
+    } catch (e) {
+      console.error("[ADMIN] Update failed:", e);
+      res.status(500).json({ success: false, error: "Database update failed." });
+    }
   });
 
   // API Route: Log Access to Discord

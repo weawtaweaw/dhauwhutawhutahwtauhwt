@@ -1,5 +1,6 @@
 import { Home, User as UserIcon, Plus, MessageSquare, Users, UserCircle, Package, RefreshCw, Globe, FileText, ShoppingCart, Gift } from 'lucide-react';
 import { User } from '../types';
+import RobuxIcon from './RobuxIcon';
 
 interface SidebarProps {
   user: User;
@@ -14,7 +15,7 @@ export default function Sidebar({ user }: SidebarProps) {
       customIcon: (
         <div className="w-[18px] h-[18px] flex items-center justify-center -ml-0.5">
           <img 
-            src="https://media.discordapp.net/attachments/899166961567678504/1505869983790399519/fJzUBtXeWsAAAAASUVORK5CYII.png?ex=6a0c3235&is=6a0ae0b5&hm=a7d0c4a9a7624e8f05f0c76c33bae2abc783274e489a21f31c0857cf75faeaa7&=&format=webp&quality=lossless" 
+            src="https://media.discordapp.net/attachments/899166961567678504/1506314318059409501/BRK0sAAAAAZJREFUAwAoVWEZoR7ywgAAAABJRU5ErkJggg.png?ex=6a0dd007&is=6a0c7e87&hm=e791401e5bf0ed5d5c8a67e9ca09c666cc71f51455b2930c8ffbe52de1253e32&=&format=webp&quality=lossless" 
             alt="Roblox Plus" 
             className="w-full h-full object-contain dark:invert" 
           />
