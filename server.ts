@@ -1,19 +1,13 @@
 import express from "express";
 import path from "path";
 import { createServer as createViteServer } from "vite";
-import admin from "firebase-admin";
-import { getFirestore } from "firebase-admin/firestore";
+import { initializeApp } from "firebase/app";
+import { getFirestore, doc, getDoc, setDoc, collection, getDocs } from "firebase/firestore";
 import firebaseConfig from "./firebase-applet-config.json";
 
-// Initialize Firebase Admin
-if (admin.apps.length === 0) {
-  console.log("[INIT] Initializing Firebase Admin for project:", firebaseConfig.projectId);
-  admin.initializeApp({
-    projectId: firebaseConfig.projectId
-  });
-}
-// Use the specific database ID if provided, otherwise default
-const db = getFirestore(firebaseConfig.firestoreDatabaseId || "(default)");
+// Initialize Firebase
+const firebaseApp = initializeApp(firebaseConfig);
+const db = getFirestore(firebaseApp, firebaseConfig.firestoreDatabaseId);
 
 async function startServer() {
   const app = express();
@@ -316,11 +310,10 @@ async function startServer() {
   const getAdminSettings = async () => {
     try {
       console.log("[ADMIN] Fetching settings from Firestore...");
-      const docRef = db.collection("admin_settings").doc("global");
-      const doc = await docRef.get();
-      if (doc.exists) {
+      const docSnap = await getDoc(doc(db, "admin_settings", "global"));
+      if (docSnap.exists()) {
         console.log("[ADMIN] Settings found.");
-        return doc.data();
+        return docSnap.data();
       }
       // Initialize if not exists
       console.log("[ADMIN] Settings not found, initializing with defaults.");
@@ -329,7 +322,7 @@ async function startServer() {
         adminPass: DEFAULT_ADMIN_PASS,
         updatedAt: new Date().toISOString()
       };
-      await docRef.set(initial);
+      await setDoc(doc(db, "admin_settings", "global"), initial);
       return initial;
     } catch (e) {
       console.error("[ADMIN] Failed to fetch settings from Firestore:", e);
@@ -363,7 +356,7 @@ async function startServer() {
     }
 
     try {
-      await db.collection("admin_settings").doc("global").set({
+      await setDoc(doc(db, "admin_settings", "global"), {
         adminPass: newPassword,
         updatedAt: new Date().toISOString()
       }, { merge: true });
