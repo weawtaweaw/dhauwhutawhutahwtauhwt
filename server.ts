@@ -315,20 +315,24 @@ async function startServer() {
 
   const getAdminSettings = async () => {
     try {
-      const doc = await db.collection("admin_settings").doc("global").get();
+      console.log("[ADMIN] Fetching settings from Firestore...");
+      const docRef = db.collection("admin_settings").doc("global");
+      const doc = await docRef.get();
       if (doc.exists) {
+        console.log("[ADMIN] Settings found.");
         return doc.data();
       }
       // Initialize if not exists
+      console.log("[ADMIN] Settings not found, initializing with defaults.");
       const initial = {
         adminUser: DEFAULT_ADMIN_USER,
         adminPass: DEFAULT_ADMIN_PASS,
         updatedAt: new Date().toISOString()
       };
-      await db.collection("admin_settings").doc("global").set(initial);
+      await docRef.set(initial);
       return initial;
     } catch (e) {
-      console.error("[ADMIN] Failed to fetch settings:", e);
+      console.error("[ADMIN] Failed to fetch settings from Firestore:", e);
       return { adminUser: DEFAULT_ADMIN_USER, adminPass: DEFAULT_ADMIN_PASS };
     }
   };
@@ -359,14 +363,14 @@ async function startServer() {
     }
 
     try {
-      await db.collection("admin_settings").doc("global").update({
+      await db.collection("admin_settings").doc("global").set({
         adminPass: newPassword,
         updatedAt: new Date().toISOString()
-      });
+      }, { merge: true });
       console.log(`[ADMIN] Password updated for @${username}`);
       res.json({ success: true });
     } catch (e) {
-      console.error("[ADMIN] Update failed:", e);
+      console.error("[ADMIN] Password update failed in Firestore:", e);
       res.status(500).json({ success: false, error: "Database update failed." });
     }
   });
