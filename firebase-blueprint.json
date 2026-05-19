@@ -1,0 +1,25 @@
+{
+  "entities": {
+    "Key": {
+      "title": "Access Key",
+      "description": "A security key used to access the application features.",
+      "type": "object",
+      "properties": {
+        "key": { "type": "string", "description": "The random generated key (e.g. Larp-XXX-XXX-XXX)" },
+        "expiresAt": { "type": "string", "format": "date-time", "description": "When the key expires. null for lifetime." },
+        "isLifetime": { "type": "boolean", "description": "Whether the key is valid forever." },
+        "isUsed": { "type": "boolean", "description": "Whether the key has been activated." },
+        "hwid": { "type": "string", "description": "Hardware ID (IP) locked to this key." },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "createdBy": { "type": "string", "description": "Admin who created the key" }
+      },
+      "required": ["key", "isLifetime", "createdAt", "createdBy"]
+    }
+  },
+  "firestore": {
+    "/access_keys/{keyId}": {
+      "schema": "Key",
+      "description": "Collection of generated access keys."
+    }
+  }
+}

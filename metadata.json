@@ -1,0 +1,6 @@
+{
+  "name": "Corbin Roblox Dashboard",
+  "description": "A Roblox-style dashboard to manage your balance, search profiles, and send Robux to friends.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

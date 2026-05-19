@@ -1,0 +1,32 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny ALL
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isAdmin() {
+      // Allow if unauthenticated (custom admin flow) OR if authenticated as specific admins
+      return request.auth == null || (
+        request.auth.token.email_verified == true &&
+        (request.auth.token.email == "blackragus123@gmail.com" || 
+         request.auth.token.email == "jhonferremendoza@gmail.com")
+      );
+    }
+
+    function isValidKey(data) {
+      return data.key is string && 
+             data.key.size() <= 256 &&
+             data.isLifetime is bool &&
+             data.createdAt is timestamp &&
+             data.createdBy is string;
+    }
+
+    // Access keys
+    match /access_keys/{keyId} {
+      // Allow all for the custom admin panel (unauthenticated writes allowed as per user request)
+      allow read, write: if true;
+    }
+  }
+}
