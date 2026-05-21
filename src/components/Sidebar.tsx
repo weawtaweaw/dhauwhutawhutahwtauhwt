@@ -13,9 +13,9 @@ export default function Sidebar({ user }: SidebarProps) {
     { 
       label: 'Roblox Plus', 
       customIcon: (
-        <div className="w-[18px] h-[18px] flex items-center justify-center -ml-0.5">
+        <div className="w-[24px] h-[24px] flex items-center justify-center -ml-1">
           <img 
-            src="https://media.discordapp.net/attachments/899166961567678504/1506314318059409501/BRK0sAAAAAZJREFUAwAoVWEZoR7ywgAAAABJRU5ErkJggg.png?ex=6a0dd007&is=6a0c7e87&hm=e791401e5bf0ed5d5c8a67e9ca09c666cc71f51455b2930c8ffbe52de1253e32&=&format=webp&quality=lossless" 
+            src="https://media.discordapp.net/attachments/1506563218288672843/1507054573464850583/xWteAAAABklEQVQDALO2HL0r0ZrUAAAAAElFTkSuQmCC.png?ex=6a108172&is=6a0f2ff2&hm=dcf572796eddb4b2ba57e58f81ca3871f8b6704108bb6467a10ca74ef23d81da&=&format=webp&quality=lossless" 
             alt="Roblox Plus" 
             className="w-full h-full object-contain dark:invert" 
           />
